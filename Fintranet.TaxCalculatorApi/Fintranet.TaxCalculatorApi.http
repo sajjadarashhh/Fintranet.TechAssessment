@@ -1,0 +1,6 @@
+@Fintranet.TaxCalculatorApi_HostAddress = http://localhost:5201
+
+GET {{Fintranet.TaxCalculatorApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
