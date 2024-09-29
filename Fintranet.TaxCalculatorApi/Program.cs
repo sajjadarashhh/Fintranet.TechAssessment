@@ -1,4 +1,7 @@
 
+using Fintranet.TaxCalculatorModel;
+using Microsoft.EntityFrameworkCore;
+
 namespace Fintranet.TaxCalculatorApi
 {
     public class Program
@@ -9,12 +12,16 @@ namespace Fintranet.TaxCalculatorApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddDbContext<CalculatorDataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<CalculatorDataContext>().Database.Migrate();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -28,7 +35,6 @@ namespace Fintranet.TaxCalculatorApi
             app.UseAuthorization();
 
 
-            app.MapControllers();
 
             app.Run();
         }

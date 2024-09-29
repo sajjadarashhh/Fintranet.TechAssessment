@@ -8,5 +8,7 @@ namespace Fintranet.TaxCalculatorModel.Tables.Taxes
         public double Tax { get; set; }
         public Guid VehicleId { get; set; }
         public VehicleModel? Vehicle { get; set; }
+        public Guid TaxRuleId { get; set; }
+        public TaxRuleModel TaxRule { get; set; } = null!;
     }
 }
