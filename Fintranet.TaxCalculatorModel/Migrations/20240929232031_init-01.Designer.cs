@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fintranet.TaxCalculatorModel.Migrations
 {
     [DbContext(typeof(CalculatorDataContext))]
-    [Migration("20240929165932_init-02")]
-    partial class init02
+    [Migration("20240929232031_init-01")]
+    partial class init01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

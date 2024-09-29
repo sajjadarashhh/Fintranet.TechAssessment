@@ -1,6 +1,6 @@
-
-using Carter;
 using Fintranet.TaxCalculatorModel;
+using Fintranet.TaxCalculatorService.TaxCalculator.Commands;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fintranet.TaxCalculatorApi
@@ -10,34 +10,29 @@ namespace Fintranet.TaxCalculatorApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddCarter();
+            builder.Services.AddMediatR(a =>
+            {
+                a.RegisterServicesFromAssembly(typeof(VehicleTaxCalculator).Assembly);
+            }); 
 
-            // Add services to the container.
-
-            builder.Services.AddDbContext<CalculatorDataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<CalculatorDataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
             {
-                scope.ServiceProvider.GetRequiredService<CalculatorDataContext>().Database.Migrate();
+                scope.ServiceProvider.GetRequiredService<CalculatorDataContext>().Database.MigrateAsync().Wait(); 
             }
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(); 
+
+            app.MapPost("/api/calculate", async (VehicleTaxCalculateDto request, IMediator mediator) =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-            app.MapCarter();
-
-
+                return await mediator.Send(request);
+            });
 
             app.Run();
         }
