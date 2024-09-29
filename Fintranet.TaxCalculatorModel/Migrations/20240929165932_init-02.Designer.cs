@@ -4,6 +4,7 @@ using Fintranet.TaxCalculatorModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fintranet.TaxCalculatorModel.Migrations
 {
     [DbContext(typeof(CalculatorDataContext))]
-    partial class CalculatorDataContextModelSnapshot : ModelSnapshot
+    [Migration("20240929165932_init-02")]
+    partial class init02
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

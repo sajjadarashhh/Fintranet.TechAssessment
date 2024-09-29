@@ -1,4 +1,5 @@
 
+using Carter;
 using Fintranet.TaxCalculatorModel;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace Fintranet.TaxCalculatorApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddCarter();
 
             // Add services to the container.
 
@@ -33,6 +35,7 @@ namespace Fintranet.TaxCalculatorApi
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+            app.MapCarter();
 
 
 
