@@ -29,7 +29,7 @@ namespace Fintranet.TaxCalculatorService.TaxCalculator.Commands
             var datesToCalculate = request.dates
                 .Where(a => freeDates.All(b => b.ToShortDateString() != a.ToShortDateString()) && a.DayOfWeek != DayOfWeek.Saturday && a.DayOfWeek != DayOfWeek.Sunday || a.Month == 7)
                 .Order().ToList();
-            var removedDates = request.dates.Except(datesToCalculate);
+            var removedDates = request.dates.Except(datesToCalculate).ToList();
             var first = datesToCalculate[0];
             var last = datesToCalculate.Last();
             var rules = _db.TaxRules.ToList();
@@ -50,11 +50,13 @@ namespace Fintranet.TaxCalculatorService.TaxCalculator.Commands
                     i++;
                 }
             } while (taxes.Count > i);
-            return new VehicleTaxCalculatedDto(result.Sum(b => b.price), [.. result, .. removedDates.Select(b => new VehicleTaxDetail(b, 0))]);
+            removedDates.AddRange(request.dates.Except(taxes.Select(b => b.date)));
+            var sum = result.Sum(b => b.price);
+            return new VehicleTaxCalculatedDto(sum > 60 ? 60 : sum, [.. result, .. removedDates.Select(b => new VehicleTaxDetail(b, 0))]);
         }
         public bool CheckTaxRemovingRule(List<VehicleTaxDetail> taxes, VehicleTaxDetail current)
         {
-            var itemsInRange = taxes.Where(a => a.date > current.date && a.date <= current.date.AddHours(1) && a != current);
+            var itemsInRange = taxes.Where(a => a.date > current.date && a.date <= current.date.AddHours(1) && a != current).ToList();
             var maxItemAfterCurrent = itemsInRange.MaxBy(a => a.price);
             if (maxItemAfterCurrent is null)
                 return false;
