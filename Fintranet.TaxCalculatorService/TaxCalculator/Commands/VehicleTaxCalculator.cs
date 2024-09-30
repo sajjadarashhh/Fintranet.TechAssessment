@@ -54,7 +54,7 @@ namespace Fintranet.TaxCalculatorService.TaxCalculator.Commands
         }
         public bool CheckTaxRemovingRule(List<VehicleTaxDetail> taxes, VehicleTaxDetail current)
         {
-            var itemsInRange = taxes.Where(a => a.date > current.date && a.date <= current.date.AddHours(1));
+            var itemsInRange = taxes.Where(a => a.date > current.date && a.date <= current.date.AddHours(1) && a != current);
             var maxItemAfterCurrent = itemsInRange.MaxBy(a => a.price);
             if (maxItemAfterCurrent is null)
                 return false;
@@ -67,6 +67,8 @@ namespace Fintranet.TaxCalculatorService.TaxCalculator.Commands
                     return true;
                 }
             }
+            foreach (var item in itemsInRange)
+                taxes.Remove(item);
             return false;
         }
 
